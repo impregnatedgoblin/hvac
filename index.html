@@ -24,10 +24,10 @@
             --fs-display-max:   8.125rem;
             --fs-display:       6.125rem;
             --fs-h1:            4.875rem;
-            --fs-h2:            3.875rem; /* ~62px // H1 Nagłówek */
+            --fs-h2:            3.875rem; 
             --fs-h3:            2.500rem; 
             --fs-lead:          2.000rem; 
-            --fs-body:          1.250rem; /* ~20px // Opisy */
+            --fs-body:          1.250rem; 
             --fs-micro:         1.000rem; 
             
             --lh-display-max:   0.75;
@@ -75,7 +75,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 64px 64px;
+            padding: 40px 64px; /* POPRAWIONE: Zmniejszona przestrzeń nagłówka z 64px */
             z-index: 100;
             transition: background-color 0.5s var(--cb-mechanical), 
                         backdrop-filter 0.5s var(--cb-mechanical), 
@@ -91,7 +91,7 @@
         }
 
         .logo-container {
-            height: 320px; 
+            height: 240px; /* POPRAWIONE: Skompresowane monumentalne logo z 320px */
             display: flex;
             align-items: center;
             transition: height 0.6s var(--cb-mechanical);
@@ -120,7 +120,7 @@
             align-items: center;
             justify-content: center;
             z-index: 200;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            box-shadow: none; /* POPRAWIONE: Usunięty wkurzający cień pod kółkiem */
             transition: transform 0.5s var(--cb-mechanical), background-color 0.5s var(--cb-mechanical);
         }
 
@@ -148,7 +148,7 @@
             color: #FFFFFF;
         }
 
-        /* 3. CURTAIN MENU PANEL (WYCYSZCZONE) */
+        /* 3. CURTAIN MENU PANEL */
         .fullscreen-menu-panel {
             position: fixed;
             top: 0;
@@ -239,7 +239,7 @@
             color: var(--steel-mid);
         }
 
-        /* POPRAWIONE: DZIELNIK WYRÓWNANY DO KRAWĘDZI MONITORÓW (FULL-BLEED) */
+        /* DZIELNIK WYRÓWNANY DO KRAWĘDZI MONITORÓW (FULL-BLEED) */
         .tech-divider-container {
             width: 100%;
             display: flex;
@@ -259,20 +259,19 @@
             font-size: 14px;
             font-weight: 600;
             color: var(--steel-mid);
-            padding: 0 64px; /* Przesunięcie plusa do osi logotypu */
+            padding: 0 64px;
             user-select: none;
         }
 
         /* CORE LAYOUT: ABSOLUTNY BRUTALIZM (WYCIĘCIE MARGINESÓW BOCZNYCH) */
         .container {
-            max-width: 100%; /* Rozciągnięcie struktury na całe okno przeglądarki */
+            max-width: 100%;
             margin: 0;
-            padding: 0; /* Wyzerowanie bocznych ograniczeń marginesu */
+            padding: 0;
             position: relative;
             z-index: 2;
         }
 
-        /* Bezpieczny, inżynieryjny uskok tekstu pod krawędź menu bocznego */
         .inner-bleed-block {
             padding-left: 64px;
             padding-right: 64px;
@@ -315,7 +314,7 @@
             line-height: 1.1;
         }
 
-        /* HERO SECTION (ZACHOWUJE SWÓJ KINEMATYCZNY OFFSET) */
+        /* HERO SECTION */
         .hero-outer {
             width: 100%;
             background-color: var(--deep-dark-steel);
@@ -332,7 +331,7 @@
             height: 100%;
             z-index: 1;
             background: linear-gradient(135deg, rgba(28, 31, 35, 0.96) 40%, rgba(28, 31, 35, 0.75) 100%), 
-                        url('file:///Users/kajapiaskowska/Downloads/Gemini_Generated_Image_jnvdgejnvdgejnvd.png') center center / cover no-repeat;
+                        url('assets/background_photo_hbp.png') center center / cover no-repeat;
             transform: scale(1.05);
             transition: transform 1.2s var(--cb-mechanical);
         }
@@ -342,14 +341,14 @@
         }
 
         .hero {
-            padding-top: 460px;
+            padding-top: 360px; /* POPRAWIONE: Skompresowany oddech pionowy pod niższe logo */
             padding-bottom: 240px;
             position: relative;
             z-index: 3;
         }
 
         .hero-content-block {
-            padding-left: 380px; /* Szlachetny uskok logotypu zostaje nienaruszony */
+            padding-left: 300px; /* POPRAWIONE: Siatka przesunięta pod nową szerokość logo (240px + 60px oddechu) */
             padding-right: 64px;
             width: 100%;
         }
@@ -360,7 +359,7 @@
         }
 
         .hero h1 {
-            font-size: var(--fs-h2); 
+            font-size: var(--fs-h2);
             font-weight: 500;
             letter-spacing: -0.03em;
             line-height: var(--lh-tight);
@@ -576,7 +575,7 @@
             color: var(--deep-industrial-steel);
         }
 
-        /* POPRAWIONE: SIATKA REALIZACJI BEZ LIMITÓW (STRZAŁ DO KRAWĘDZI EKRANU) */
+        /* SIATKA REALIZACJI */
         .portfolio-gallery {
             padding: 160px 0;
         }
@@ -584,7 +583,7 @@
         .brutalist-grid {
             display: grid;
             grid-template-columns: 1.2fr 1fr;
-            gap: 0; /* Całkowite wyzerowanie przerw między zdjęciami */
+            gap: 0;
             width: 100%;
         }
 
@@ -641,10 +640,6 @@
         .gallery-item:hover::after {
             opacity: 1;
         }
-
-        .gallery-item:nth-child(1).revealed { transition-delay: 0s; opacity: 1; transform: translateY(0); }
-        .gallery-item:nth-child(2).revealed { transition-delay: 0.2s; opacity: 1; transform: translateY(0); }
-        .gallery-item:nth-child(3).revealed { transition-delay: 0.4s; opacity: 1; transform: translateY(0); }
 
         /* BRANDING MANIFESTO */
         .manifesto {
@@ -818,7 +813,7 @@
 
     <header class="main-header" id="header">
         <div class="logo-container">
-            <img src="file:///Users/kajapiaskowska/Downloads/hbp_logo_white.png" alt="HBP Logo" class="logo-img" id="mainLogo">
+            <img src="assets/hbp_logo_white.png" alt="HBP Logo" class="logo-img" id="mainLogo">
         </div>
         
         <button class="menu-trigger-btn" id="menuBtn" aria-label="Nawigacja witryny">
@@ -937,13 +932,13 @@
             
             <div class="brutalist-grid">
                 <div class="gallery-item scroll-reveal" data-meta=" SYS_01 // ZONE_CLEAN // TIG_WELD_OK ">
-                    <img src="file:///Users/kajapiaskowska/Downloads/Gemini_Generated_Image_jnvdgejnvdgejnvd.png" alt="Prefabrykacja HVAC strefa sterylna">
+                    <img src="assets/background_photo_hbp.png" alt="Prefabrykacja HVAC strefa sterylna">
                 </div>
                 <div class="gallery-item scroll-reveal" data-meta=" MAT_W_02 // CARBON_STEEL // SPECT_NDT ">
-                    <img src="file:///Users/kajapiaskowska/Downloads/Gemini_Generated_Image_jnvdgejnvdgejnvd.png" alt="Spawanie rurociągów metodą TIG">
+                    <img src="assets/background_photo_hbp.png" alt="Spawanie rurociągów metodą TIG">
                 </div>
                 <div class="gallery-item scroll-reveal" data-meta=" CERT_03 // DANISH_AT_COMPLIANT ">
-                    <img src="file:///Users/kajapiaskowska/Downloads/Gemini_Generated_Image_jnvdgejnvdgejnvd.png" alt="Gotowy moduł ciśnieniowy ISO">
+                    <img src="assets/background_photo_hbp.png" alt="Gotowy moduł ciśnieniowy ISO">
                 </div>
             </div>
         </section>
@@ -970,7 +965,7 @@
                     </div>
                     <div class="manifesto-slide">
                         <h4>Beyond Projects</h4>
-                        <p>Nas Praca nie kończy się na rozładunku. Zapewniamy pełną, <span class="highlight-yellow">transparentną dokumentację</span> powykonawczą, paszporty materiałowe (MDR) oraz kompletne wyniki laboratoryjnych badań NDT.</p>
+                        <p>Nasza Praca nie kończy się na rozładunku. Zapewniamy pełną, <span class="highlight-yellow">transparentną dokumentację</span> powykonawczą, paszporty materiałowe (MDR) oraz kompletne wyniki laboratoryjnych badań NDT.</p>
                     </div>
                 </div>
             </div>
@@ -1055,8 +1050,8 @@
             const header = document.getElementById("header");
             const mainLogo = document.getElementById("mainLogo");
             
-            const whiteLogoUrl = "file:///Users/kajapiaskowska/Downloads/hbp_logo_white.png";
-            const darkLogoUrl = "file:///Users/kajapiaskowska/Downloads/hbp_logo.png";
+            const whiteLogoUrl = "assets/hbp_logo_white.png";
+            const darkLogoUrl = "assets/hbp_logo.png";
 
             window.addEventListener("scroll", function() {
                 if (window.scrollY > 150) {
