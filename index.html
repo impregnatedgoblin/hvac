@@ -75,7 +75,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 40px 64px; /* POPRAWIONE: Zmniejszona przestrzeń nagłówka z 64px */
+            padding: 40px 64px; /* POPRAWIONE: Zmniejszony padding pionowy z 64px */
             z-index: 100;
             transition: background-color 0.5s var(--cb-mechanical), 
                         backdrop-filter 0.5s var(--cb-mechanical), 
@@ -91,7 +91,7 @@
         }
 
         .logo-container {
-            height: 240px; /* POPRAWIONE: Skompresowane monumentalne logo z 320px */
+            height: 240px; /* POPRAWIONE: Wysokość skompresowana z 320px */
             display: flex;
             align-items: center;
             transition: height 0.6s var(--cb-mechanical);
@@ -120,7 +120,7 @@
             align-items: center;
             justify-content: center;
             z-index: 200;
-            box-shadow: none; /* POPRAWIONE: Usunięty wkurzający cień pod kółkiem */
+            box-shadow: none; /* POPRAWIONE: Całkowicie wycięty cień pod przyciskiem */
             transition: transform 0.5s var(--cb-mechanical), background-color 0.5s var(--cb-mechanical);
         }
 
@@ -259,15 +259,15 @@
             font-size: 14px;
             font-weight: 600;
             color: var(--steel-mid);
-            padding: 0 64px;
+            padding: 0 64px; 
             user-select: none;
         }
 
         /* CORE LAYOUT: ABSOLUTNY BRUTALIZM (WYCIĘCIE MARGINESÓW BOCZNYCH) */
         .container {
-            max-width: 100%;
+            max-width: 100%; 
             margin: 0;
-            padding: 0;
+            padding: 0; 
             position: relative;
             z-index: 2;
         }
@@ -341,14 +341,14 @@
         }
 
         .hero {
-            padding-top: 360px; /* POPRAWIONE: Skompresowany oddech pionowy pod niższe logo */
+            padding-top: 360px; /* POPRAWIONE: Dostosowane do skompresowanego nagłówka */
             padding-bottom: 240px;
             position: relative;
             z-index: 3;
         }
 
         .hero-content-block {
-            padding-left: 300px; /* POPRAWIONE: Siatka przesunięta pod nową szerokość logo (240px + 60px oddechu) */
+            padding-left: 300px; /* POPRAWIONE: Zmniejszone przesunięcie pod nowy obrys logo (240px + 60px oddechu) */
             padding-right: 64px;
             width: 100%;
         }
@@ -359,7 +359,7 @@
         }
 
         .hero h1 {
-            font-size: var(--fs-h2);
+            font-size: var(--fs-h2); 
             font-weight: 500;
             letter-spacing: -0.03em;
             line-height: var(--lh-tight);
@@ -583,7 +583,7 @@
         .brutalist-grid {
             display: grid;
             grid-template-columns: 1.2fr 1fr;
-            gap: 0;
+            gap: 0; 
             width: 100%;
         }
 
@@ -640,6 +640,10 @@
         .gallery-item:hover::after {
             opacity: 1;
         }
+
+        .gallery-item:nth-child(1).revealed { transition-delay: 0s; opacity: 1; transform: translateY(0); }
+        .gallery-item:nth-child(2).revealed { transition-delay: 0.2s; opacity: 1; transform: translateY(0); }
+        .gallery-item:nth-child(3).revealed { transition-delay: 0.4s; opacity: 1; transform: translateY(0); }
 
         /* BRANDING MANIFESTO */
         .manifesto {
