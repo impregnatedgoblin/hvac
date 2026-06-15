@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hydromix BP — Business Precision</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Tektur:wght@600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            /* Paleta Kolorów */
+            --alert-yellow: #FCED21;
+            --deep-dark-steel: #1C1F23;
+            --deep-industrial-steel: #2B2F33;
+            --steel-mid: #6E7781;
+            --light-steel: #D9DEE3;
+            --bg-light: #F4F6F8;
+
+            /* MATRYCA TYPOGRAFICZNA */
+            --fs-display-ultra: 10.125rem;
+            --fs-display-max:   8.125rem;
+            --fs-display:       6.125rem;
+            --fs-h1:            4.875rem;
+            --fs-h2:            3.875rem; /* ~62px // H1 Nagłówek */
+            --fs-h3:            2.500rem; 
+            --fs-lead:          2.000rem; 
+            --fs-body:          1.250rem; /* ~20px // Opisy */
+            --fs-micro:         1.000rem; 
+            
+            --lh-display-max:   0.75;
+            --lh-display:       0.8;
+            --lh-tight:         1.05;
+            --lh-h3:            1.2;
+            --lh-normal:        1.65;
+
+            /* TŁUMIENIE ANIMACJI */
+            --cb-mechanical: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-light);
+            color: var(--deep-dark-steel);
+            line-height: var(--lh-normal);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body.menu-open {
+            overflow: hidden;
+            padding-right: var(--scrollbar-width, 0px);
+        }
+        body.menu-open .main-header {
+            padding-right: calc(64px + var(--scrollbar-width, 0px));
+        }
+
+        /* 1. DYNAMIC ADAPTIVE HEADER */
+        .main-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 64px 64px;
+            z-index: 100;
+            transition: background-color 0.5s var(--cb-mechanical), 
+                        backdrop-filter 0.5s var(--cb-mechanical), 
+                        border-bottom 0.5s var(--cb-mechanical), 
+                        padding 0.5s var(--cb-mechanical);
+        }
+
+        .main-header.scrolled {
+            background-color: rgba(244, 246, 248, 0.9);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid rgba(217, 222, 227, 0.5);
+            padding: 24px 64px;
+        }
+
+        .logo-container {
+            height: 320px; 
+            display: flex;
+            align-items: center;
+            transition: height 0.6s var(--cb-mechanical);
+        }
+
+        .main-header.scrolled .logo-container {
+            height: 38px;
+        }
+
+        .logo-img {
+            height: 100%;
+            width: auto;
+            display: block;
+            transition: opacity 0.3s ease;
+        }
+
+        /* KINETYCZNY TRIGGER MENU */
+        .menu-trigger-btn {
+            width: 64px;
+            height: 64px;
+            background-color: var(--alert-yellow);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            transition: transform 0.5s var(--cb-mechanical), background-color 0.5s var(--cb-mechanical);
+        }
+
+        .menu-trigger-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .menu-open .menu-trigger-btn {
+            background-color: var(--deep-dark-steel);
+        }
+
+        .menu-trigger-icon {
+            font-family: 'Inter', sans-serif;
+            font-size: 32px;
+            font-weight: 400;
+            color: var(--deep-dark-steel);
+            line-height: 1;
+            transition: transform 0.5s var(--cb-mechanical), color 0.5s var(--cb-mechanical);
+            display: inline-block;
+            margin-top: -2px;
+        }
+
+        .menu-open .menu-trigger-icon {
+            transform: rotate(45deg);
+            color: #FFFFFF;
+        }
+
+        /* 3. CURTAIN MENU PANEL (WYCYSZCZONE) */
+        .fullscreen-menu-panel {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 440px;
+            height: 100vh;
+            background-color: #FFFFFF; 
+            border-left: 1px solid var(--light-steel);
+            z-index: 150;
+            padding: 160px 64px 64px 64px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            
+            transform: translateX(100%);
+            visibility: hidden;
+            transition: transform 0.6s var(--cb-mechanical), visibility 0.6s;
+            box-shadow: -10px 0 40px rgba(0, 0, 0, 0.05);
+        }
+
+        .fullscreen-menu-panel.active {
+            transform: translateX(0);
+            visibility: visible;
+        }
+
+        .menu-overlay-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(28, 31, 35, 0.4);
+            backdrop-filter: blur(4px);
+            z-index: 140;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s var(--cb-mechanical), visibility 0.5s;
+        }
+
+        .menu-open .menu-overlay-backdrop {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .menu-nav-links {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .menu-nav-link {
+            font-size: 1.500rem; 
+            font-weight: 400;
+            color: var(--deep-dark-steel);
+            text-decoration: none;
+            letter-spacing: -0.01em;
+            transition: color 0.2s var(--cb-mechanical);
+            display: block;
+        }
+
+        .menu-nav-link:hover {
+            color: var(--steel-mid);
+        }
+
+        .menu-panel-footer {
+            border-top: 1px solid var(--light-steel);
+            padding-top: 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .menu-footer-meta {
+            font-size: var(--fs-micro);
+            color: var(--steel-mid);
+            line-height: 1.5;
+        }
+
+        .menu-lang-switch {
+            font-size: var(--fs-micro);
+            font-weight: 500;
+            color: var(--deep-dark-steel);
+            text-decoration: none;
+            transition: color 0.3s var(--cb-mechanical);
+        }
+
+        .menu-lang-switch:hover {
+            color: var(--steel-mid);
+        }
+
+        /* POPRAWIONE: DZIELNIK WYRÓWNANY DO KRAWĘDZI MONITORÓW (FULL-BLEED) */
+        .tech-divider-container {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            position: relative;
+            margin: 64px 0;
+        }
+        
+        .tech-line {
+            flex-grow: 1;
+            height: 1px;
+            background-color: rgba(217, 222, 227, 0.6);
+        }
+
+        .tech-marker {
+            font-family: 'Tektur', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--steel-mid);
+            padding: 0 64px; /* Przesunięcie plusa do osi logotypu */
+            user-select: none;
+        }
+
+        /* CORE LAYOUT: ABSOLUTNY BRUTALIZM (WYCIĘCIE MARGINESÓW BOCZNYCH) */
+        .container {
+            max-width: 100%; /* Rozciągnięcie struktury na całe okno przeglądarki */
+            margin: 0;
+            padding: 0; /* Wyzerowanie bocznych ograniczeń marginesu */
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Bezpieczny, inżynieryjny uskok tekstu pod krawędź menu bocznego */
+        .inner-bleed-block {
+            padding-left: 64px;
+            padding-right: 64px;
+        }
+
+        .section-label {
+            font-size: var(--fs-micro);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--steel-mid);
+            margin-bottom: 32px;
+            display: block;
+        }
+
+        .section-title {
+            font-size: var(--fs-h2);
+            font-weight: 500;
+            letter-spacing: -0.03em;
+            line-height: var(--lh-tight);
+            color: var(--deep-dark-steel);
+            margin-bottom: 120px;
+            max-width: 1000px;
+            
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s var(--cb-mechanical), transform 0.8s var(--cb-mechanical);
+        }
+        .section-title.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .highlight-yellow {
+            background-color: var(--alert-yellow);
+            color: var(--deep-dark-steel);
+            padding: 2px 8px;
+            font-weight: 500;
+            display: inline-block;
+            line-height: 1.1;
+        }
+
+        /* HERO SECTION (ZACHOWUJE SWÓJ KINEMATYCZNY OFFSET) */
+        .hero-outer {
+            width: 100%;
+            background-color: var(--deep-dark-steel);
+            color: #FFFFFF;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-bg-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            background: linear-gradient(135deg, rgba(28, 31, 35, 0.96) 40%, rgba(28, 31, 35, 0.75) 100%), 
+                        url('file:///assets/background_photo_hbp.png') center center / cover no-repeat;
+            transform: scale(1.05);
+            transition: transform 1.2s var(--cb-mechanical);
+        }
+        
+        body.loaded .hero-bg-image {
+            transform: scale(1);
+        }
+
+        .hero {
+            padding-top: 460px;
+            padding-bottom: 240px;
+            position: relative;
+            z-index: 3;
+        }
+
+        .hero-content-block {
+            padding-left: 380px; /* Szlachetny uskok logotypu zostaje nienaruszony */
+            padding-right: 64px;
+            width: 100%;
+        }
+
+        .hero-title-mask {
+            overflow: hidden;
+            margin-bottom: 48px;
+        }
+
+        .hero h1 {
+            font-size: var(--fs-h2); 
+            font-weight: 500;
+            letter-spacing: -0.03em;
+            line-height: var(--lh-tight);
+            max-width: 900px;
+            color: #FFFFFF;
+            
+            transform: translateY(100%);
+            transition: transform 1s var(--cb-mechanical);
+        }
+        body.loaded .hero h1 {
+            transform: translateY(0);
+        }
+
+        .hero-sub {
+            font-size: var(--fs-body);
+            font-weight: 400;
+            color: var(--light-steel);
+            max-width: 720px;
+            margin-bottom: 64px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1s var(--cb-mechanical) 0.2s, transform 1s var(--cb-mechanical) 0.2s;
+            line-height: var(--lh-normal);
+            letter-spacing: -0.01em;
+        }
+        body.loaded .hero-sub {
+            opacity: 0.95;
+            transform: translateY(0);
+        }
+
+        .cta-link {
+            font-size: var(--fs-body);
+            font-weight: 500;
+            color: var(--alert-yellow);
+            text-decoration: none;
+            display: inline-block;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 1s var(--cb-mechanical) 0.4s, transform 1s var(--cb-mechanical) 0.4s;
+        }
+        body.loaded .cta-link {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .cta-link span {
+            display: inline-block;
+            transition: transform 0.3s var(--cb-mechanical);
+        }
+        .cta-link:hover span {
+            transform: translateX(8px);
+        }
+
+        /* O NAS */
+        .about {
+            padding: 160px 0 220px 0;
+        }
+
+        .about-layout-cover {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 96px;
+            align-items: start;
+        }
+
+        .cover-text-max {
+            font-family: 'Inter', sans-serif;
+            font-size: var(--fs-display-max);
+            font-weight: 500;
+            line-height: var(--lh-display-max);
+            color: var(--light-steel);
+            letter-spacing: -0.05em;
+            text-transform: uppercase;
+            position: sticky;
+            top: 160px;
+            transition: color 0.8s var(--cb-mechanical);
+        }
+        .cover-text-max.revealed {
+            color: var(--steel-mid);
+        }
+
+        .cover-text-max span {
+            font-family: 'Tektur', sans-serif;
+            font-size: var(--fs-lead);
+            font-weight: 600;
+            color: var(--light-steel);
+            display: block;
+            margin-top: 16px;
+            letter-spacing: 0;
+            transition: color 0.8s var(--cb-mechanical) 0.1s;
+        }
+        .cover-text-max.revealed span {
+            color: var(--deep-dark-steel);
+        }
+
+        .about-main-content {
+            padding-top: 24px;
+        }
+
+        .about-content-text {
+            font-size: var(--fs-body);
+            color: var(--deep-industrial-steel);
+            max-width: 680px;
+            margin-top: 48px;
+            
+            opacity: 0;
+            transform: translateY(25px);
+            transition: opacity 0.8s var(--cb-mechanical) 0.2s, transform 0.8s var(--cb-mechanical) 0.2s;
+        }
+        .about-content-text.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* WARSZTATY */
+        .workshops {
+            padding: 160px 0 200px 0;
+        }
+
+        .typographic-rows {
+            display: flex;
+            flex-direction: column;
+            gap: 140px;
+        }
+
+        .row-item {
+            display: grid;
+            grid-template-columns: 200px 380px 1fr;
+            gap: 48px;
+            align-items: start;
+            
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s var(--cb-mechanical);
+        }
+        .row-item.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .huge-number {
+            font-family: 'Tektur', sans-serif;
+            font-size: var(--fs-display);
+            font-weight: 600;
+            line-height: var(--lh-display);
+            color: var(--light-steel);
+            letter-spacing: -0.02em;
+            transition: color 1s var(--cb-mechanical);
+        }
+        .row-item.revealed .huge-number {
+            color: var(--deep-industrial-steel);
+        }
+
+        .row-item h3 {
+            font-size: var(--fs-h3);
+            font-weight: 500;
+            letter-spacing: -0.03em;
+            line-height: var(--lh-h3);
+            color: var(--deep-dark-steel);
+        }
+
+        .row-content {
+            font-size: var(--fs-body);
+            color: var(--deep-industrial-steel);
+            max-width: 620px;
+            padding-right: 64px;
+        }
+
+        .meta-specs {
+            margin-top: 40px;
+            font-size: var(--fs-micro);
+            color: var(--steel-mid);
+            display: flex;
+            gap: 40px;
+        }
+
+        .meta-badge {
+            color: var(--deep-dark-steel);
+            font-weight: 500;
+        }
+
+        /* JAKOŚĆ */
+        .quality {
+            padding: 160px 0 200px 0;
+        }
+
+        .triple-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 64px;
+        }
+
+        .quality-col {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s var(--cb-mechanical);
+        }
+        .quality-col:nth-child(1).revealed { transition-delay: 0s; opacity: 1; transform: translateY(0); }
+        .quality-col:nth-child(2).revealed { transition-delay: 0.15s; opacity: 1; transform: translateY(0); }
+        .quality-col:nth-child(3).revealed { transition-delay: 0.3s; opacity: 1; transform: translateY(0); }
+
+        .quality-col h4 {
+            font-family: 'Tektur', sans-serif;
+            font-size: var(--fs-micro);
+            font-weight: 600;
+            color: var(--steel-mid);
+            margin-bottom: 32px;
+            letter-spacing: 0.05em;
+        }
+
+        .quality-col p {
+            font-size: var(--fs-body);
+            color: var(--deep-industrial-steel);
+        }
+
+        /* POPRAWIONE: SIATKA REALIZACJI BEZ LIMITÓW (STRZAŁ DO KRAWĘDZI EKRANU) */
+        .portfolio-gallery {
+            padding: 160px 0;
+        }
+
+        .brutalist-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 0; /* Całkowite wyzerowanie przerw między zdjęciami */
+            width: 100%;
+        }
+
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            background-color: var(--deep-dark-steel);
+            aspect-ratio: 16 / 10;
+            
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 1s var(--cb-mechanical), transform 1s var(--cb-mechanical);
+        }
+
+        .gallery-item:nth-child(1) {
+            grid-row: span 2;
+            aspect-ratio: auto;
+            height: 100%;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            filter: grayscale(0.15) contrast(1.02);
+            transition: transform 0.6s var(--cb-mechanical), filter 0.6s var(--cb-mechanical);
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.02);
+            filter: grayscale(0) contrast(1);
+        }
+
+        .gallery-item::after {
+            content: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"><path d="M5 0v10M0 5h10" stroke="%23FCED21" stroke-width="1"/></svg>') attr(data-meta);
+            position: absolute;
+            bottom: 20px;
+            left: 24px;
+            font-family: 'Tektur', sans-serif;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            color: #FFFFFF;
+            background-color: rgba(28, 31, 35, 0.85);
+            padding: 6px 12px;
+            opacity: 0.4;
+            transition: opacity 0.3s var(--cb-mechanical);
+            pointer-events: none;
+            line-height: 1;
+            white-space: pre;
+        }
+
+        .gallery-item:hover::after {
+            opacity: 1;
+        }
+
+        .gallery-item:nth-child(1).revealed { transition-delay: 0s; opacity: 1; transform: translateY(0); }
+        .gallery-item:nth-child(2).revealed { transition-delay: 0.2s; opacity: 1; transform: translateY(0); }
+        .gallery-item:nth-child(3).revealed { transition-delay: 0.4s; opacity: 1; transform: translateY(0); }
+
+        /* BRANDING MANIFESTO */
+        .manifesto {
+            padding: 160px 0 220px 0;
+        }
+
+        .manifesto-ticker-container {
+            min-height: 250px;
+            display: flex;
+            align-items: flex-start;
+            max-width: 900px;
+        }
+
+        .ticker-content-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        .manifesto-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(8px);
+            transition: opacity 0.8s var(--cb-mechanical), transform 0.8s var(--cb-mechanical), visibility 0.8s;
+            width: 100%;
+        }
+
+        .manifesto-slide.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+            position: relative;
+        }
+
+        .manifesto-slide h4 {
+            font-size: var(--fs-h3);
+            font-weight: 500;
+            margin-bottom: 24px;
+            letter-spacing: -0.03em;
+            color: var(--deep-dark-steel);
+            line-height: var(--lh-h3);
+        }
+
+        .manifesto-slide p {
+            font-size: var(--fs-body);
+            color: var(--steel-mid);
+            line-height: var(--lh-normal);
+            letter-spacing: -0.01em;
+        }
+
+        /* KONTAKT & FOOTER */
+        .contact {
+            padding: 160px 0 64px 0;
+        }
+
+        .contact-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 96px;
+        }
+
+        .raw-form {
+            display: flex;
+            flex-direction: column;
+            gap: 64px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .form-group label {
+            font-size: var(--fs-micro);
+            font-weight: 500;
+            color: var(--steel-mid);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .form-group input, .form-group textarea {
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid var(--light-steel);
+            padding: 16px 0;
+            font-family: 'Inter', sans-serif;
+            font-size: var(--fs-body);
+            color: var(--deep-dark-steel);
+            outline: none;
+            transition: border-color 0.3s var(--cb-mechanical);
+        }
+
+        .form-group input:focus, .form-group textarea:focus {
+            border-bottom-color: var(--deep-dark-steel);
+        }
+
+        .submit-btn {
+            align-self: flex-start;
+            background: transparent;
+            border: none;
+            font-family: 'Inter', sans-serif;
+            font-size: var(--fs-body);
+            font-weight: 500;
+            color: var(--deep-dark-steel);
+            cursor: pointer;
+            padding: 8px 0;
+            border-bottom: 2px solid transparent;
+            transition: transform 0.3s var(--cb-mechanical), color 0.3s var(--cb-mechanical), border-bottom-color 0.3s var(--cb-mechanical);
+        }
+
+        .submit-btn:hover {
+            transform: translateX(8px);
+            border-bottom-color: var(--alert-yellow);
+        }
+
+        .footer-meta {
+            margin-top: 180px;
+            padding-top: 64px;
+            border-top: 1px solid var(--light-steel);
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 32px;
+            font-size: var(--fs-micro);
+            color: var(--steel-mid);
+        }
+
+        .footer-meta p strong {
+            color: var(--deep-dark-steel);
+            font-weight: 500;
+            display: block;
+            margin-bottom: 12px;
+        }
+
+        /* RESPONSIVENESS */
+        @media (max-width: 1200px) {
+            :root {
+                --fs-display-max: 5.5rem;
+                --fs-display:     4.5rem;
+                --fs-h1:          3.5rem;
+                --fs-h2:          2.8rem;
+                --fs-h3:          2.0rem;
+                --fs-lead:        1.6rem;
+                --fs-body:        1.1rem;
+            }
+            .main-header { padding: 32px 32px; }
+            .main-header.scrolled { padding: 24px 32px; }
+            .logo-container { height: 160px; }
+            .hero { padding-top: 280px; }
+            .hero-content-block { padding-left: 0; }
+            .inner-bleed-block { padding-left: 32px; padding-right: 32px; }
+            .tech-marker { padding: 0 32px; }
+            .about-layout-cover { grid-template-columns: 1fr; gap: 48px; }
+            .cover-text-max { position: static; }
+            .hero h1 { max-width: 100%; }
+            .brutalist-grid { grid-template-columns: 1fr; }
+            .gallery-item:nth-child(1) { grid-row: auto; aspect-ratio: 16 / 10; }
+            .contact-layout { grid-template-columns: 1fr; gap: 64px; }
+            .triple-grid { grid-template-columns: 1fr; gap: 48px; }
+            .row-item { grid-template-columns: 1fr; gap: 16px; }
+            .footer-meta { grid-template-columns: 1fr 1fr; gap: 32px; }
+            .fullscreen-menu-panel { width: 100%; padding: 140px 32px 32px 32px; }
+        }
+    </style>
+</head>
+<body id="body-context">
+
+    <div class="menu-overlay-backdrop" id="menuBackdrop"></div>
+
+    <header class="main-header" id="header">
+        <div class="logo-container">
+            <img src="file:///assets/hbp_logo_white.png" alt="HBP Logo" class="logo-img" id="mainLogo">
+        </div>
+        
+        <button class="menu-trigger-btn" id="menuBtn" aria-label="Nawigacja witryny">
+            <span class="menu-trigger-icon" id="menuIcon">+</span>
+        </button>
+    </header>
+
+    <div class="fullscreen-menu-panel" id="menuPanel">
+        <nav class="menu-nav-links">
+            <a href="#about" class="menu-nav-link">O nas</a>
+            <a href="#workshops" class="menu-nav-link">Warsztaty</a>
+            <a href="#quality" class="menu-nav-link">Jakość</a>
+            <a href="#gallery" class="menu-nav-link">Dokumentacja</a>
+            <a href="#manifesto" class="menu-nav-link">Manifest</a>
+            <a href="#contact" class="menu-nav-link">Kontakt</a>
+        </nav>
+        
+        <div class="menu-panel-footer">
+            <div class="menu-footer-meta">
+                <p>Hydromix BP Sp. z o.o.</p>
+                <p style="color: var(--steel-mid);">Business Precision</p>
+            </div>
+            <a href="#" class="menu-lang-switch">EN</a>
+        </div>
+    </div>
+
+    <div class="hero-outer">
+        <div class="hero-bg-image"></div>
+        <div class="container">
+            <section class="hero">
+                <div class="hero-content-block">
+                    <div class="hero-title-mask">
+                        <h1>partner w prefabrykacji i technologiach spawalniczych.</h1>
+                    </div>
+                    <p class="hero-sub">Dostarczamy gotowe moduły rurociągowe dla branży HVAC i przemysłu. Łączymy precyzję certyfikowanych spawalni z inżynierskim wsparciem. Tam, gdzie liczy się czystość materiałowa i rygor norm ISO – jesteśmy Twoim <span class="highlight-yellow">fundamentem</span>.</p>
+                    <a href="#contact" class="cta-link">Zapytaj o wycenę prefabrykacji <span>&rarr;</span></a>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <div class="container">
+
+        <section id="about" class="about inner-bleed-block">
+            <span class="section-label scroll-reveal">O nas / 01</span>
+            <div class="about-layout-cover">
+                <div class="cover-text-max scroll-reveal">Hbp<span>[01]</span></div>
+                <div class="about-main-content">
+                    <h2 class="section-title scroll-reveal">Inżynieria oparta na odpowiedzialności.</h2>
+                    <p class="about-content-text scroll-reveal">Jako spółka-córka lidera w sektorze medycznym, przenieśliśmy standardy <span class="highlight-yellow">chirurgicznej precyzji</span> do branży HVAC. Nie konkurujemy z projektantami – jesteśmy ich zaufanym partnerem wykonawczym, dostarczając prefabrykaty najwyższej próby, pozbawione błędów placu budowy.</p>
+                </div>
+            </div>
+        </section>
+
+        <div class="tech-divider-container"><div class="tech-line"></div><div class="tech-marker">+</div></div>
+
+        <section id="workshops" class="workshops inner-bleed-block">
+            <span class="section-label scroll-reveal">Segmentacja operacyjna / 02</span>
+            <h2 class="section-title scroll-reveal">Rygorystyczna separacja materiałowa jako fundament jakości.</h2>
+            
+            <div class="typographic-rows">
+                <div class="row-item scroll-reveal">
+                    <div class="huge-number">01</div>
+                    <h3>Warsztat Stali<br>Nierdzewnej</h3>
+                    <div class="row-content">
+                        <p>Całkowita, fizyczna <span class="highlight-yellow">izolacja procesowa</span> od obróbki stali czarnej, eliminująca ryzyko kontaminacji krzyżowej. Specjalizacja obejmuje zaawansowane spawanie metodą TIG oraz szlifowanie w kontrolowanych warunkach o najwyższym standardzie sterylności.</p>
+                        <div class="meta-specs">
+                            <span>Standard: <span class="meta-badge">High Cleanliness</span></span>
+                            <span>Norma: <span class="meta-badge">ISO 14732</span></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row-item scroll-reveal">
+                    <div class="huge-number">02</div>
+                    <h3>Warsztat Stali<br>Czarnej</h3>
+                    <div class="row-content">
+                        <p>Skala, wydajność i ciągłość technologiczna dedykowana to obsługi stali konstrukcyjnej oraz ciężkich rurociągów przesyłowych. Bezpieczeństwo procesowe wspieramy certyfikowanymi systemami odciągowym oraz stałym monitoringiem środowiska pracy.</p>
+                        <div class="meta-specs">
+                            <span>Norma: <span class="meta-badge">EN ISO 9606</span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="tech-divider-container"><div class="tech-line"></div><div class="tech-marker">+</div></div>
+
+        <section id="quality" class="quality inner-bleed-block">
+            <span class="section-label scroll-reveal">Rygor procesowy / 03</span>
+            <h2 class="section-title scroll-reveal">Jakość mierzalna na poziomie molekularnym.</h2>
+            
+            <div class="triple-grid">
+                <div class="quality-col scroll-reveal">
+                    <h4>01 / NDT (RTG)</h4>
+                    <p>Wykrywanie wad wewnętrznych metodą radiograficzną (X-Ray) zgodnie z normą ISO 17636. Każda spoina posiada trwały, cyfrowy zapis jakości, eliminujący ryzyko awarii ciśnieniowych.</p>
+                </div>
+                <div class="quality-col scroll-reveal">
+                    <h4>02 / COATING</h4>
+                    <p>Inspekcja i przygotowanie powierzchni według standardów NACE / SSPC. Kontrolujemy grubość, adhezję oraz ciągłość powłok ochronnych w restrykcyjnych warunkach środowiskowych.</p>
+                </div>
+                <div class="quality-col scroll-reveal">
+                    <h4>03 / DANISH STANDARDS</h4>
+                    <p>Pełna zgodność z wytycznymi duńskiego Arbejdstilsynet. Spełniamy najwyższe europejske wymogi bezpieczeństwa pracy z oparami metali ciężkich oraz ochrony radiologicznej.</p>
+                </div>
+            </div>
+        </section>
+
+        <div class="tech-divider-container"><div class="tech-line"></div><div class="tech-marker">+</div></div>
+
+        <section id="gallery" class="portfolio-gallery">
+            <div class="inner-bleed-block">
+                <span class="section-label scroll-reveal">Dokumentacja wizualna / 04</span>
+                <h2 class="section-title scroll-reveal">Park maszynowy i struktura prefabrykatów.</h2>
+            </div>
+            
+            <div class="brutalist-grid">
+                <div class="gallery-item scroll-reveal" data-meta=" SYS_01 // ZONE_CLEAN // TIG_WELD_OK ">
+                    <img src="'file:///assets/background_photo_hbp.png" alt="Prefabrykacja HVAC strefa sterylna">
+                </div>
+                <div class="gallery-item scroll-reveal" data-meta=" MAT_W_02 // CARBON_STEEL // SPECT_NDT ">
+                    <img src="'file:///assets/background_photo_hbp.png" alt="Spawanie rurociągów metodą TIG">
+                </div>
+                <div class="gallery-item scroll-reveal" data-meta=" CERT_03 // DANISH_AT_COMPLIANT ">
+                    <img src="'file:///assets/background_photo_hbp.png" alt="Gotowy moduł ciśnieniowy ISO">
+                </div>
+            </div>
+        </section>
+
+        <div class="tech-divider-container"><div class="tech-line"></div><div class="tech-marker">+</div></div>
+
+        <section id="manifesto" class="manifesto inner-bleed-block">
+            <span class="section-label scroll-reveal">Definicja tożsamości / 05</span>
+            <h2 class="section-title scroll-reveal">Zasady, które redefiniują standardy wykonawstwa.</h2>
+            
+            <div class="manifesto-ticker-container scroll-reveal">
+                <div class="ticker-content-wrapper">
+                    <div class="manifesto-slide active">
+                        <h4>Business Partner</h4>
+                        <p>Nie działamy jak zwykły dostawca. Funkcjonujemy jako integralne ramię inżynieryjno-produkcyjne dla biur projektowych i generalnych wykonawców, dbając o absolutną <span class="highlight-yellow">terminowość</span> oraz precyzję wymiarową.</p>
+                    </div>
+                    <div class="manifesto-slide">
+                        <h4>Best Practice</h4>
+                        <p>Wdrożyliśmy rygorystyczne procedury ochrony zdrowia i kontroli środowiskowej wymagane na najbardziej restrykcyjnych rynkach skandynawskich, w tym w <span class="highlight-yellow">Danii</span>. Spełniamy wymogi certyfikowanego sprzętu PPE i zarządzania oparami.</p>
+                    </div>
+                    <div class="manifesto-slide">
+                        <h4>Building Performance</h4>
+                        <p>Każdy moduł rurociągowy opuszczający warsztat jest zoptymalizowany pod kątem przepływów hydraulicznych i niezawodności strukturalnej. Gwarantujemy <span class="highlight-yellow">bezawaryjną pracę</span> systemów ciśnieniowych przez dekady.</p>
+                    </div>
+                    <div class="manifesto-slide">
+                        <h4>Beyond Projects</h4>
+                        <p>Nas Praca nie kończy się na rozładunku. Zapewniamy pełną, <span class="highlight-yellow">transparentną dokumentację</span> powykonawczą, paszporty materiałowe (MDR) oraz kompletne wyniki laboratoryjnych badań NDT.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="tech-divider-container"><div class="tech-line"></div><div class="tech-marker">+</div></div>
+
+        <section id="contact" class="contact inner-bleed-block">
+            <span class="section-label scroll-reveal">Zapytanie ofertowe / 06</span>
+            <div class="contact-layout">
+                <h2 class="section-title scroll-reveal">Porozmawiajmy o Twojej inwestycji.</h2>
+                
+                <form class="raw-form" onsubmit="event.preventDefault();">
+                    <div class="form-group">
+                        <label for="name">Imię i nazwisko / Firma</label>
+                        <input type="text" id="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Adres e-mail</label>
+                        <input type="email" id="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Specyfikacja projektu (CAD / PDF / Zakres)</label>
+                        <textarea id="message" rows="4" required></textarea>
+                    </div>
+                    <button type="submit" class="submit-btn">Wyślij zapytanie techniczne &rarr;</button>
+                </form>
+            </div>
+
+            <footer class="footer-meta">
+                <p><strong>Hydromix BP Sp. z o.o.</strong>Business Precision</p>
+                <p><strong>Adres pracowni</strong>ul. Technologiczna 12<br>00-000 Przemysł</p>
+                <p><strong>Rejestr spółki</strong>NIP: 000-000-00-00<br>KRS: 0000000000</p>
+                <p><strong>Kontakt bezpośredni</strong>biuro@hydromixbp.pl<br>+48 000 000 000</p>
+            </footer>
+        </section>
+
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+            document.documentElement.style.setProperty('--scrollbar-width', `${scrollbarWidth}px`);
+
+            setTimeout(() => {
+                document.body.classList.add("loaded");
+            }, 100);
+
+            // LOGIKA MENU
+            const menuBtn = document.getElementById("menuBtn");
+            const menuPanel = document.getElementById("menuPanel");
+            const menuBackdrop = document.getElementById("menuBackdrop");
+            const bodyContext = document.getElementById("body-context");
+            const menuLinks = document.querySelectorAll(".menu-nav-link");
+
+            function toggleMenu() {
+                bodyContext.classList.toggle("menu-open");
+                menuPanel.classList.toggle("active");
+            }
+
+            function closeMenu() {
+                bodyContext.classList.remove("menu-open");
+                menuPanel.classList.remove("active");
+            }
+
+            menuBtn.addEventListener("click", toggleMenu);
+            menuBackdrop.addEventListener("click", closeMenu);
+            menuLinks.forEach(link => {
+                link.addEventListener("click", closeMenu);
+            });
+
+            // MANIFEST TICKER
+            const slides = document.querySelectorAll(".manifesto-slide");
+            let currentSlide = 0;
+            setInterval(() => {
+                slides[currentSlide].classList.remove("active");
+                currentSlide = (currentSlide + 1) % slides.length;
+                slides[currentSlide].classList.add("active");
+            }, 4500);
+
+            // DYNAMICZNA PODMIANA LOGO
+            const header = document.getElementById("header");
+            const mainLogo = document.getElementById("mainLogo");
+            
+            const whiteLogoUrl = "file:///assets/hbp_logo_white.png";
+            const darkLogoUrl = "file:///assets/hbp_logo.png";
+
+            window.addEventListener("scroll", function() {
+                if (window.scrollY > 150) {
+                    if (!header.classList.contains("scrolled")) {
+                        header.classList.add("scrolled");
+                        mainLogo.src = darkLogoUrl; 
+                    }
+                } else {
+                    if (header.classList.contains("scrolled")) {
+                        header.classList.remove("scrolled");
+                        mainLogo.src = whiteLogoUrl; 
+                    }
+                }
+            });
+
+            // SCROLL REVEAL ENGINE
+            const revealOptions = {
+                threshold: 0.1,
+                rootMargin: "0px 0px -60px 0px"
+            };
+
+            const revealObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add("revealed");
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, revealOptions);
+
+            const elementsToReveal = document.querySelectorAll(".scroll-reveal, .section-title, .row-item, .quality-col, .about-content-text, .cover-text-max, .manifesto-ticker-container, .gallery-item");
+            elementsToReveal.forEach(el => {
+                revealObserver.observe(el);
+            });
+        });
+    </script>
+
+</body>
+</html>
